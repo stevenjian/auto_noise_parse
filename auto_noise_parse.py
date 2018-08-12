@@ -2,14 +2,13 @@ import pandas as pd
 import collections as co
 from bs4 import BeautifulSoup
 import requests
-html_string ='''
+import os
 
-  '''
 url = 'http://www.auto-decibel-db.com/index_kmh.html'
 html = requests.get(url).text
-#soup = BeautifulSoup(html_string, 'lxml')  # Parse the HTML as a string
+
 soup = BeautifulSoup(html, "lxml")
-#table = soup.find_all('table')[0]  # Grab the first table
+
 table = soup.find('table', id="resultTable")
 table_body = table.find('tbody')
 table_head = table.find('thead')
@@ -17,11 +16,7 @@ header = []
 for th in table_head.findAll('th'):
     key = th.get_text()
     header.append(key)
-endrows = 0
 
-#for tr in table.findAll('tr'):
-#    if tr.findAll('th')[0].get_text() in (''):
-#        endrows += 1
 
 rows = len(table.findAll('tr'))
 
@@ -39,5 +34,7 @@ for row in range(rows):
         continue
 
 df = pd.DataFrame(list_of_dicts)
-print(df)
+dir_path = os.path.dirname(os.path.realpath(__file__))
+print(dir_path+"\\"+"auto_noise.csv")
+df.to_csv(dir_path+"\\"+"auto_noise.csv")
 
